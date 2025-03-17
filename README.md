@@ -73,7 +73,7 @@ To build the application for SharePoint:
 npm run sp-build
 npm run sp-package
 ```
-### Sharepoint notes
+# Sharepoint notes
 ## 1. Deploy as a SharePoint Framework (SPFx) Web Part
 Create an SPFx project that wraps your React application
 Build the SPFx package (.sppkg file)
