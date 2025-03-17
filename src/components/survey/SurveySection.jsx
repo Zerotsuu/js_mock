@@ -13,6 +13,8 @@
  */
 import QuestionRow from './QuestionRow';
 import QuestionMark from './QuestionMark';
+import RadioGroup from './RadioGroup';
+import { colorVars } from '../../styles/colors';
 
 export default function SurveySection({ id, title, questions, onHelpClick, onRadioChange }) {
   // Likert scale options for the radio buttons (1-5 rating)
@@ -34,17 +36,6 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
       data: 'https://img.freepik.com/free-photo/data-analysis-business-intelligence-bi-concept-businessman-analyst-looking-graphs-charts-dashboard-screen_616485-61.jpg'
     };
 
-    // Different background colors for each section - using gradients for visual appeal
-    const sectionColors = {
-      strategy: 'bg-gradient-to-r from-blue-900 to-blue-700',
-      customer: 'bg-gradient-to-r from-purple-900 to-purple-700',
-      organization: 'bg-gradient-to-r from-green-900 to-green-700',
-      operations: 'bg-gradient-to-r from-yellow-900 to-yellow-700',
-      risk: 'bg-gradient-to-r from-red-900 to-red-700',
-      finance: 'bg-gradient-to-r from-indigo-900 to-indigo-700',
-      data: 'bg-gradient-to-r from-cyan-900 to-cyan-700'
-    };
-
     // Different icons for each section - using emojis for simplicity
     const sectionIcons = {
       strategy: '🎯',
@@ -59,25 +50,60 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
     // Return visual elements with fallbacks if section ID is not recognized
     return {
       image: sectionImages[id] || 'https://6fikixnjm9.ufs.sh/f/W6lDwSyomLOB10jFAjEtaij7RU3fhC4HdI5bXcnkB0MvqxyG',
-      color: sectionColors[id] || 'bg-[#15162c]',
-      icon: sectionIcons[id] || '📋'
+      icon: sectionIcons[id] || '📋',
     };
   };
 
   // Get the visual elements for this section
   const sectionVisual = getSectionVisual();
 
+  // Define styles using color variables
+  const styles = {
+    section: {
+      backgroundColor: colorVars.background,
+      borderColor: colorVars.border,
+      boxShadow: `0 2px 8px ${colorVars.shadow}`,
+    },
+    title: {
+      color: colorVars.textPrimary,
+    },
+    imageBorder: {
+      borderColor: colorVars.primary,
+    },
+    tableHeader: {
+      borderColor: colorVars.border,
+    },
+    headerText: {
+      color: colorVars.textPrimary,
+    },
+    mobileQuestionCard: {
+      backgroundColor: colorVars.backgroundAlt,
+      borderColor: `${colorVars.primary}30`, // 30% opacity
+    },
+    mobileQuestionText: {
+      color: colorVars.textPrimary,
+    },
+    commentField: {
+      backgroundColor: colorVars.background,
+      color: colorVars.textPrimary,
+      borderColor: `${colorVars.primary}30`, // 30% opacity
+    },
+    commentPlaceholder: {
+      color: colorVars.textSecondary,
+    },
+  };
+
   return (
     // Container for each survey section with unique ID for navigation
-    <section id={id} className={`rounded-xl p-4 md:p-8 ${sectionVisual.color}`}>
+    <section id={id} className="rounded-xl p-4 md:p-8 shadow-md border" style={styles.section}>
       {/* Section title with icon */}
-      <h2 className="mb-4 md:mb-6 flex items-center text-xl md:text-2xl font-bold text-white">
+      <h2 className="mb-4 md:mb-6 flex items-center text-xl md:text-2xl font-bold" style={styles.title}>
         <span className="mr-2 text-2xl md:text-3xl">{sectionVisual.icon}</span>
         {title}
       </h2>
 
       {/* Section visual image */}
-      <div className="mb-4 md:mb-6 h-24 md:h-32 w-full overflow-hidden rounded-lg bg-white/5 shadow-lg">
+      <div className="mb-4 md:mb-6 h-24 md:h-32 w-full overflow-hidden rounded-lg shadow-lg border-2" style={styles.imageBorder}>
         <img 
           src={sectionVisual.image} 
           alt={`${title} visual`} 
@@ -90,15 +116,14 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
         <table className="w-full">
           {/* Table header with Likert scale options */}
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="w-1/2 pb-4 text-left text-lg font-medium text-white">Question</th>
+            <tr className="border-b" style={styles.tableHeader}>
+              <th className="w-1/2 pb-4 text-left text-lg font-medium" style={styles.headerText}>Question</th>
               {/* Generate column headers for each Likert scale option */}
               {likertOptions.map((option) => (
-                <th key={option} className="w-8 pb-4 text-center text-sm font-medium text-white">
-                  {option}
-                </th>
+                <th key={option} className="w-8 pb-4 text-center text-sm font-medium" style={styles.headerText}/>
+                  
               ))}
-              <th className="w-64 pb-4 text-left text-sm font-medium text-white">Comments</th>
+              <th className="w-64 pb-4 pl-4 text-left text-sm font-medium" style={styles.headerText}>Comments</th>
             </tr>
           </thead>
 
@@ -110,6 +135,7 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
                 question={question} 
                 onHelpClick={onHelpClick}
                 onRadioChange={onRadioChange}
+                color={colorVars.primary}
               />
             ))}
           </tbody>
@@ -119,9 +145,9 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
       {/* Questions list - mobile view */}
       <div className="md:hidden space-y-6">
         {questions.map((question) => (
-          <div key={question.id} className="bg-white/5 p-4 rounded-lg">
+          <div key={question.id} className="p-4 rounded-lg border" style={styles.mobileQuestionCard}>
             <div className="flex items-start mb-3">
-              <div className="flex-1 text-white font-medium">{question.text}</div>
+              <div className="flex-1 font-medium" style={styles.mobileQuestionText}>{question.text}</div>
               {question.helpText && (
                 <QuestionMark onClick={() => onHelpClick(question.helpText)} />
               )}
@@ -129,25 +155,20 @@ export default function SurveySection({ id, title, questions, onHelpClick, onRad
             
             {/* Likert scale for mobile */}
             <div className="flex justify-between mb-3">
-              {likertOptions.map((option) => (
-                <label key={option} className="flex flex-col items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name={question.id}
-                    value={option}
-                    onChange={(e) => onRadioChange(question.id, e.target.value)}
-                    className="appearance-none h-8 w-8 rounded-full border-2 border-[hsl(280,100%,70%)] bg-transparent checked:border-4 checked:bg-[hsl(280,100%,70%)] hover:border-[hsl(280,100%,80%)] transition-all cursor-pointer"
-                  />
-                  <span className="mt-1 text-xs text-white text-center">{option}</span>
-                </label>
-              ))}
+              <RadioGroup
+                name={question.id}
+                options={likertOptions}
+                onChange={(value) => onRadioChange(question.id, value)}
+                color={colorVars.primary}
+              />
             </div>
             
             {/* Comments field for mobile */}
             <textarea
               id={`${question.id}-comment`}
               placeholder="Comments (optional)"
-              className="w-full p-2 rounded bg-white/10 text-white placeholder-white/50 text-sm"
+              className="w-full p-2 rounded text-sm border"
+              style={styles.commentField}
               rows="2"
             ></textarea>
           </div>

@@ -6,8 +6,14 @@
  * 
  * @param {number} completed - Number of completed questions
  * @param {number} total - Total number of questions
+ * @param {string} color - CSS color value for the progress circle (default: uses primary color)
  */
-export default function DonutChart({ completed, total }) {
+import { colorVars } from '../../styles/colors';
+
+export default function DonutChart({ completed, total, color }) {
+  // Use provided color or default to primary color from variables
+  const chartColor = color || colorVars.primary;
+  
   // Calculate percentage completed
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
   
@@ -18,6 +24,28 @@ export default function DonutChart({ completed, total }) {
   const circumference = 2 * Math.PI * radius; // Circumference of the donut
   const strokeDashoffset = circumference - (percentage / 100) * circumference; // Stroke offset based on percentage
   
+  // Define styles using color variables
+  const styles = {
+    backgroundCircle: {
+      stroke: colorVars.border,
+    },
+    progressCircle: {
+      stroke: chartColor,
+    },
+    percentageText: {
+      color: colorVars.textPrimary,
+    },
+    completedText: {
+      color: chartColor,
+    },
+    totalText: {
+      color: colorVars.textPrimary,
+    },
+    labelText: {
+      color: colorVars.textSecondary,
+    },
+  };
+  
   return (
     <div className="flex flex-col items-center">
       {/* SVG for the donut chart */}
@@ -25,8 +53,7 @@ export default function DonutChart({ completed, total }) {
         <svg className="h-full w-full" viewBox={`0 0 ${size} ${size}`}>
           {/* Background circle */}
           <circle
-            className="text-gray-700"
-            stroke="currentColor"
+            stroke={styles.backgroundCircle.stroke}
             fill="transparent"
             strokeWidth={strokeWidth}
             r={radius}
@@ -36,8 +63,7 @@ export default function DonutChart({ completed, total }) {
           
           {/* Progress circle */}
           <circle
-            className="text-[hsl(280,100%,70%)] transition-all duration-1000 ease-in-out"
-            stroke="currentColor"
+            stroke={styles.progressCircle.stroke}
             fill="transparent"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
@@ -47,22 +73,23 @@ export default function DonutChart({ completed, total }) {
             cx={size / 2}
             cy={size / 2}
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            className="transition-all duration-1000 ease-in-out"
           />
         </svg>
         
         {/* Percentage text in the center */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xl md:text-2xl font-bold text-white">{percentage}%</span>
+          <span className="text-xl md:text-2xl font-bold" style={styles.percentageText}>{percentage}%</span>
         </div>
       </div>
       
       {/* Label below the chart */}
       <div className="mt-2 text-center">
-        <p className="text-sm text-gray-300">
-          <span className="font-medium text-white">{completed}</span>
-          <span className="mx-1">/</span>
-          <span>{total}</span>
-          <span className="ml-1 text-xs">questions</span>
+        <p className="text-xl sm:text-sm">
+          <span className="font-bold" style={styles.completedText}>{completed}</span>
+          <span className="mx-1" style={styles.totalText}>/</span>
+          <span style={styles.totalText}>{total}</span>
+          <span className="ml-1 text-xl md:text-sm" style={styles.labelText}>questions</span>
         </p>
       </div>
     </div>

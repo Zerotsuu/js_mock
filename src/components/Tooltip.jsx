@@ -9,14 +9,55 @@
  * @param {boolean} isVisible - Whether the mobile tooltip is visible
  * @param {Function} onClose - Function to call when closing the mobile tooltip
  */
+import { colorVars } from '../styles/colors';
+
 export default function Tooltip({ message, isVisible, onClose }) {
+  // Define styles using color variables
+  const styles = {
+    desktopTooltip: {
+      backgroundColor: colorVars.background,
+      borderColor: colorVars.border,
+      boxShadow: `0 0 10px ${colorVars.shadow}`,
+    },
+    desktopContent: {
+      backgroundColor: colorVars.backgroundAlt,
+      borderColor: colorVars.border,
+    },
+    title: {
+      color: colorVars.textPrimary,
+    },
+    message: {
+      color: colorVars.textSecondary,
+    },
+    overlay: {
+      backgroundColor: colorVars.overlay,
+    },
+    mobileTooltip: {
+      backgroundColor: colorVars.background,
+      borderColor: colorVars.border,
+      boxShadow: `0 0 20px ${colorVars.shadow}`,
+    },
+    closeButton: {
+      color: colorVars.textSecondary,
+    },
+    closeButtonHover: {
+      color: colorVars.textPrimary,
+    },
+  };
+
   return (
     <>
       {/* Desktop tooltip (sidebar) - hidden on mobile */}
-      <div className="hidden md:block fixed right-0 top-0 h-screen w-96 bg-[#1a1744] p-6 shadow-lg">
-        <div className="mt-16 rounded-lg bg-white/10 p-6 text-white">
-          <h3 className="mb-4 text-xl font-semibold">Help Information</h3>
-          <p className="text-sm leading-relaxed text-gray-200">{message}</p>
+      <div 
+        className="hidden md:block fixed right-0 top-0 h-screen w-96 p-6 shadow-lg border-l" 
+        style={styles.desktopTooltip}
+      >
+        <div 
+          className="mt-16 rounded-lg p-6 border" 
+          style={styles.desktopContent}
+        >
+          <h3 className="mb-4 text-xl font-semibold" style={styles.title}>Help Information</h3>
+          <p className="text-sm leading-relaxed" style={styles.message}>{message}</p>
         </div>
       </div>
       
@@ -25,17 +66,23 @@ export default function Tooltip({ message, isVisible, onClose }) {
         <>
           {/* Semi-transparent overlay */}
           <div 
-            className="md:hidden fixed inset-0 bg-black/50 z-40 animate-fade-in"
+            className="md:hidden fixed inset-0 z-40 animate-fade-in"
+            style={styles.overlay}
             onClick={onClose}
           ></div>
           
           {/* Popup content */}
-          <div className="md:hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[85%] bg-[#1a1744] rounded-lg p-5 shadow-lg z-50 animate-popup-in">
+          <div 
+            className="md:hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[85%] rounded-lg p-5 z-50 animate-popup-in border"
+            style={styles.mobileTooltip}
+          >
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-lg font-semibold text-white">Help</h3>
+                <h3 className="text-lg font-semibold" style={styles.title}>Help</h3>
                 <button 
-                  className="text-white/70 hover:text-white"
+                  style={styles.closeButton}
+                  onMouseOver={(e) => e.currentTarget.style.color = styles.closeButtonHover.color}
+                  onMouseOut={(e) => e.currentTarget.style.color = styles.closeButton.color}
                   onClick={onClose}
                   aria-label="Close help"
                 >
@@ -44,7 +91,7 @@ export default function Tooltip({ message, isVisible, onClose }) {
                   </svg>
                 </button>
               </div>
-              <p className="text-sm text-white">{message}</p>
+              <p className="text-sm" style={styles.message}>{message}</p>
             </div>
           </div>
         </>
